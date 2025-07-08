@@ -37,7 +37,7 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
-local MainTab = Window:CreateTab("Tabs", nil) -- Title, Image
+local MainTab = Window:CreateTab("Home", nil) -- Title, Image
 local MainSection = MainTab:CreateSection("Main")
 
 Rayfield:Notify({
@@ -151,5 +151,36 @@ end)
 
 -- Call this when your button is clicked
 applySpeed()
+   end,
+})
+
+local OthersTab = Window:CreateTab("Teleports", nil) -- Title, Image
+local OthersSection = OthersTab:CreateSection("Areas")
+
+local Button = OthersTab:CreateButton({
+   Name = "Conveyor Area ",
+   Callback = function()
+        local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local function safeTeleport(part)
+	local character = player.Character
+	if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if not humanoid then return end
+
+	-- Set to PlatformStand to disable physics temporarily
+	humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+	character:MoveTo(part.Position + Vector3.new(0, 10, 0))
+
+	-- Wait a short moment before restoring control
+	task.delay(0.1, function()
+		humanoid:ChangeState(Enum.HumanoidStateType.GettingUp) -- or Running
+	end)
+end
+
+local destination = workspace:WaitForChild("Map"):WaitForChild("Cylinder2")
+safeTeleport(destination)
    end,
 })
